@@ -1,0 +1,12 @@
+{
+  "name": "eventTrackerExpo",
+  "displayName": "eventTrackerExpo",
+  "expo": {
+    "name": "eventTrackerExpo",
+    "slug": "eventTrackerExpo",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
