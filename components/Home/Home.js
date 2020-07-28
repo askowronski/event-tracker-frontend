@@ -8,7 +8,7 @@ export default function HomeScreen({ navigation }) {
         <Text style={styles.text}>Home Screen </Text>
         <Button
           title="Add Event"
-          onPress={() => navigation.navigate('AddEvent')}
+          onPress={() => navigation.navigate('AddEventScreen')}
         />
       </View>
     );

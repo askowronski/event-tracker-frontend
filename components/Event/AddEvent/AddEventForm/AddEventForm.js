@@ -2,10 +2,13 @@ import * as React from 'react';
 import { View, Text, Button, StyleSheet, TextInput } from 'react-native';
 import { withTheme } from 'react-native-elements';
 import CalendarWrapper from '../../../CalendarWrapper/CalendarWrapper'
+import Toast, {DURATION} from 'react-native-easy-toast'
 
 export default class AddEventForm extends React.Component {
     constructor(props) {
         super(props);
+        this.failToastRef = React.createRef();
+        this.successToastRef = React.createRef();
         this.state = {eventName: '',
                     userName: '',
                     selected: '',
@@ -17,6 +20,7 @@ export default class AddEventForm extends React.Component {
         this.changeDuration = this.changeDuration.bind(this);
         this.changeNotes = this.changeNotes.bind(this);
         this.changeType = this.changeType.bind(this);
+        this.createEvent = this.createEvent.bind(this);
 
 
       }
@@ -56,7 +60,7 @@ export default class AddEventForm extends React.Component {
                 inputStyles: styles.notes,
                 multiLine: true
             }
-        ]
+        ];
         
         return formInputs;
     
@@ -103,7 +107,7 @@ export default class AddEventForm extends React.Component {
         );
       }
 
-      createEvent() {
+      createEvent(successToast, failToast) {
 
         fetch('http://localhost:8080/event', {
           method: 'POST',
@@ -118,9 +122,18 @@ export default class AddEventForm extends React.Component {
             duration: this.state.duration,
             notes: this.state.notes
           })
-        }).catch((error) => {
-          console.error(error);
-        });;
+        }).then(function(response) {
+            if (!response.ok) {
+                failToast.show('Add Event Failed');
+                throw Error(response.statusText);
+            }
+            return response;
+        }).then(function(response) {
+            successToast.show('Event Added.');
+            console.log("ok");
+        }).catch(function(error) {
+            console.log(error);
+        });
 
       }
 
@@ -128,6 +141,16 @@ export default class AddEventForm extends React.Component {
       render() {
         return (
             <View style={styles.eventFormContainer}>
+                <Toast ref={this.failToastRef}
+                       style={{backgroundColor:'red'}}
+                       position='top'
+                       positionValue='10'
+                />
+                <Toast ref={this.successToastRef}
+                       style={{backgroundColor:'green'}}
+                       position='top'
+                       positionValue='10'
+                />
                 {this.formInputs().map(input => this.textInput(input.labelName, input.onChangeFunction, input.value, input.inputStyles, input.multiLine))} 
                 <Text style={styles.inputLabel}>Date</Text>
                 <CalendarWrapper
@@ -141,7 +164,7 @@ export default class AddEventForm extends React.Component {
                     }
                 }}
                         />  
-                  <Button onPress={() => this.createEvent()} title="Add Event"/>
+                  <Button onPress={() => this.createEvent(this.successToastRef.current, this.failToastRef.current)} title="Add Event"/>
             </View>
            
            

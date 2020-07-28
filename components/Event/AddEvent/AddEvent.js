@@ -10,7 +10,7 @@ export default function AddEvent({navigation}) {
         <AddEventForm />
         <Button
           title="Go Home"
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => navigation.navigate('HomeScreen')}
         />
       </View>
     );

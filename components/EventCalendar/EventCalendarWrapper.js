@@ -8,10 +8,6 @@ export default function EventCalendarWrapper({navigation}) {
         <Text>Event Calendar</Text>
 
         <EventCalendar />
-        <Button
-          title="Go Home"
-          onPress={() => navigation.navigate('Home')}
-        />
       </View>
     );
   }
