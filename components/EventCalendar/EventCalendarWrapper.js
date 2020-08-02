@@ -5,8 +5,6 @@ import EventCalendar from './EventCalendar';
 export default function EventCalendarWrapper({navigation}) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Event Calendar</Text>
-
         <EventCalendar />
       </View>
     );

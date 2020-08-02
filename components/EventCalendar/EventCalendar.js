@@ -129,23 +129,27 @@ export default class EventCalendar extends React.Component {
         margin: 20
       },
       eventCalendarWrapper: {
-          width: '80%',
-          backgroundColor: 'orange'
+          width: '90%',
+          backgroundColor: 'white',
+          borderWidth: 5,
+          borderColor: '#1d697c',
       },
       typeFilter : {
         padding:10,
-        fontSize: 12,
-        backgroundColor: "green",
+        fontSize: 14,
+        backgroundColor: "white",
+          display: 'inline=block',
         alignSelf: "center"
       },
       eventCalendarHeader: {
           padding:20,
           fontSize: 20,
-          width: '100%'
+          width: '100%',
+          textAlign: 'center',
       },
       picker: {
           width: '10%',
-          alignSelf: "center",
+          display: 'inline=block',
           padding: 10
       }
   });

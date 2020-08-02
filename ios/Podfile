@@ -88,6 +88,8 @@ target 'eventTrackerExpo' do
   add_flipper_pods!
   pod 'react-native-simple-toast', :path => '../node_modules/react-native-simple-toast'
 
+  pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
+
   post_install do |installer|
     flipper_post_install(installer)
   end
