@@ -1,21 +1,21 @@
 import * as React from 'react';
-import { View, Text, Button, Image, StyleSheet } from 'react-native';
-import logo from '../../assets/images/psi.png';
+import {View, Text, Button, Image, StyleSheet} from 'react-native';
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({navigation}) {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text style={styles.text}>Home Screen </Text>
-        <Button
-          title="Add Event"
-          onPress={() => navigation.navigate('AddEventScreen')}
-        />
-      </View>
+        <View style={styles.container}>
+            <Text style={styles.text}>Event Tracker </Text>
+        </View>
     );
-  }
+}
 
-  const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     text: {
-      fontSize: 20,
+        fontSize: 100,
+        color: '#1d697c',
+        fontFamily: "Century Gothic",
+        fontWeight: 'bold'
     },
-  });
+    container: {flex: 1, alignItems: 'center', justifyContent: 'center'},
+    button: {width: '20%', padding: 10}
+});
