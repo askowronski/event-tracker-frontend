@@ -73,7 +73,7 @@ export default class AddEventForm extends React.Component {
                     inputStyles: styles.textInput
                 },
                 {
-                    labelName: 'Duration',
+                    labelName: 'Duration (s)',
                     onChangeFunction: this.changeDuration,
                     value: this.state.duration,
                     inputStyles: styles.textInput
