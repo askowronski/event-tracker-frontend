@@ -1,10 +1,18 @@
 import * as React from 'react';
-import {View, Text, Button, StyleSheet, TextInput} from 'react-native';
+import {
+    View,
+    Text,
+    Button,
+    StyleSheet,
+    TextInput,
+    CheckBox
+} from 'react-native';
 import {withTheme} from 'react-native-elements';
 import CalendarWrapper from '../../../CalendarWrapper/CalendarWrapper'
 import Toast, {DURATION} from 'react-native-easy-toast'
 import TimePicker from 'react-native-simple-time-picker';
 import {concat} from "react-native-reanimated";
+import DateTimeWrapper from "../DateTimeWrapper";
 
 var emptyState = {
     eventName: '',
@@ -14,13 +22,14 @@ var emptyState = {
     duration: '',
     notes: '',
     type: '',
+    multiPeriod: false,
     startTime: {
-        selectedHours: '12',
-        selectedMinutes: '12'
+        selectedHours: 12,
+        selectedMinutes: 12
     },
     endTime: {
-        selectedHours: '12',
-        selectedMinutes: '12'
+        selectedHours: 12,
+        selectedMinutes: 12
     }
 }
 
@@ -33,17 +42,20 @@ export default class AddEventForm extends React.Component {
             eventName: '',
             userName: '',
             selected: '',
+            selectedEndTime: '',
             selectedFormatted: '',
+            selectedEndTimeFormatted: '',
             duration: '',
             notes: '',
             type: '',
+            multiPeriod: false,
             startTime: {
-                selectedHours: '12',
-                selectedMinutes: '12'
+                selectedHours: 12,
+                selectedMinutes: 12
             },
             endTime: {
-                selectedHours: '12',
-                selectedMinutes: '12'
+                selectedHours: 12,
+                selectedMinutes: 12
             }
         };
         this.handleChange = this.handleChange.bind(this);
@@ -54,6 +66,7 @@ export default class AddEventForm extends React.Component {
         this.changeType = this.changeType.bind(this);
         this.createEvent = this.createEvent.bind(this);
         this.clearInputs = this.clearInputs.bind(this);
+        this.setMultiPeriod = this.setMultiPeriod.bind(this);
 
     }
 
@@ -98,6 +111,10 @@ export default class AddEventForm extends React.Component {
 
     }
 
+    setMultiPeriod(value) {
+        this.setState({multiPeriod: value});
+    }
+
     handleChange(text) {
         this.setState({eventName: text});
     }
@@ -114,10 +131,28 @@ export default class AddEventForm extends React.Component {
         var day = dateString.split("-")[2];
 
         var newDateString = month + "-" + day + "-" + year;
+
         this.setState({
             selected: dateString,
             selectedFormatted: newDateString
         })
+
+    }
+
+    changeEndDate(date) {
+
+        var dateString = date.dateString;
+        var year = dateString.split("-")[0];
+        var month = dateString.split("-")[1];
+        var day = dateString.split("-")[2];
+
+        var newDateString = month + "-" + day + "-" + year;
+
+        this.setState({
+            selectedEndTime: dateString,
+            selectedEndTimeFormatted: newDateString
+        })
+
     }
 
     changeDuration(duration) {
@@ -165,7 +200,6 @@ export default class AddEventForm extends React.Component {
         endTime.setMinutes(this.state.endTime.selectedMinutes);
         endTime.setHours(this.state.endTime.selectedHours);
 
-
         fetch('http://localhost:8080/event', {
             method: 'POST',
             headers: {
@@ -194,7 +228,6 @@ export default class AddEventForm extends React.Component {
             console.log(error);
         });
 
-
     }
 
     clearInputs() {
@@ -206,15 +239,48 @@ export default class AddEventForm extends React.Component {
             duration: '',
             notes: '',
             type: '',
+            multiPeriod: false,
             startTime: {
-                selectedHours: '12',
-                selectedMinutes: '12'
+                selectedHours: 12,
+                selectedMinutes: 12
             },
             endTime: {
-                selectedHours: '12',
-                selectedMinutes: '12'
+                selectedHours: 12,
+                selectedMinutes: 12
             }
         })
+    }
+
+    changeStartTime = (hours, minutes) => {
+        this.setState(
+            {
+                startTime: {
+                    selectedHours: hours,
+                    selectedMinutes: minutes
+                }
+            });
+    };
+
+    changeEndTime = (hours, minutes) => {
+        this.setState(
+            {
+                endTime: {
+                    selectedHours: hours,
+                    selectedMinutes: minutes
+                }
+            });
+    };
+
+    renderEndTime(){
+        if(this.state.multiPeriod === true)
+            return    <DateTimeWrapper
+                changeDate={this.changeEndDate}
+                startTime={this.state.endTime}
+                selected={this.state.selectedEndTime}
+                changeTime={this.changeEndTime}
+                labelText="End Date"
+            />;
+        return null;
     }
 
     render() {
@@ -233,46 +299,22 @@ export default class AddEventForm extends React.Component {
                 {this.formInputs().map(input => this.textInput(input.labelName,
                     input.onChangeFunction, input.value, input.inputStyles,
                     input.multiLine))}
-                <Text style={styles.inputLabel}>Date</Text>
-                <CalendarWrapper
-                    onDayPress={(date) => this.changeDate(date)}
-                    markedDates={{
-                        [this.state.selected]: {
-                            selected: true,
-                            disableTouchEvent: true,
-                            selectedColor: 'orange',
-                            selectedTextColor: 'red'
-                        }
-                    }}
+                <Text style={styles.inputLabel}>MultiPeriod?</Text>
+                <CheckBox
+                    value={this.state.multiPeriod}
+                    onValueChange={this.setMultiPeriod}
+                    style={styles.checkbox}
                 />
-                <View>
-                    <Text style={styles.inputLabel}>Start Time</Text>
-                    <TimePicker
-                        selectedHours={this.state.startTime.selectedHours}
-                        selectedMinutes={this.state.startTime.selectedMinutes}
-                        onChange={(hours, minutes) => this.setState(
-                            {
-                                startTime: {
-                                    selectedHours: hours,
-                                    selectedMinutes: minutes
-                                }
-                            })}
-                    />
-                </View>
-                <View>
-                    <Text style={styles.inputLabel}>End Time</Text>
-                    <TimePicker
-                        selectedHours={this.state.endTime.selectedHours}
-                        selectedMinutes={this.state.endTime.selectedMinutes}
-                        onChange={(hours, minutes) => this.setState(
-                            {
-                                endTime: {
-                                    selectedHours: hours,
-                                    selectedMinutes: minutes
-                                }
-                            })}
-                    />
-                </View>
+
+                <DateTimeWrapper
+                    changeDate={this.changeDate}
+                    startTime={this.state.startTime}
+                    selected={this.state.selected}
+                    changeTime={this.changeStartTime}
+                    labelText="Start Date"
+                />
+
+                {this.renderEndTime()}
 
                 <Button onPress={() => this.createEvent(
                     this.successToastRef.current, this.failToastRef.current,
@@ -313,7 +355,10 @@ const styles = StyleSheet.create({
     },
     eventFormContainer: {
         width: '50%'
-    }
+    },
+    checkbox: {
+        alignSelf: "left",
+    },
 });
 
   
