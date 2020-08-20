@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-import CalendarWrapper from "../../CalendarWrapper/CalendarWrapper";
+import RNCalendarWrapper from "../../RNCalendarWrapper/RNCalendarWrapper";
 import TimePicker from "react-native-simple-time-picker";
 
 export default function DateTimeWrapper(props) {
     return (
         <View >
             <Text style={styles.inputLabel}>{props.labelText}</Text>
-            <CalendarWrapper
+            <RNCalendarWrapper
                 onDayPress={(date) => props.changeDate(date)}
                 markedDates={{
                     [props.selected]: {

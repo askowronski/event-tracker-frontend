@@ -8,7 +8,7 @@ import {
     CheckBox
 } from 'react-native';
 import {withTheme} from 'react-native-elements';
-import CalendarWrapper from '../../../CalendarWrapper/CalendarWrapper'
+import RNCalendarWrapper from '../../../RNCalendarWrapper/RNCalendarWrapper'
 import Toast, {DURATION} from 'react-native-easy-toast'
 import TimePicker from 'react-native-simple-time-picker';
 import {concat} from "react-native-reanimated";
@@ -45,6 +45,7 @@ export default class AddEventForm extends React.Component {
             selectedEndTime: '',
             selectedFormatted: '',
             selectedEndTimeFormatted: '',
+            isOnGoing: false,
             duration: '',
             notes: '',
             type: '',
@@ -113,6 +114,11 @@ export default class AddEventForm extends React.Component {
 
     setMultiPeriod(value) {
         this.setState({multiPeriod: value});
+    }
+
+    setIsOnGoing = (value) => {
+        this.setState({isOnGoing: value});
+
     }
 
     handleChange(text) {
@@ -200,20 +206,25 @@ export default class AddEventForm extends React.Component {
         endTime.setMinutes(this.state.endTime.selectedMinutes);
         endTime.setHours(this.state.endTime.selectedHours);
 
+        let body = {
+            name: this.state.eventName,
+            type: this.state.type,
+            startTime: startTime,
+            duration: this.state.duration,
+            notes: this.state.notes
+        };
+
+        if (this.state.multiPeriod && !this.state.isOnGoing) {
+            body.endTime = endTime;
+        }
+
         fetch('http://localhost:8080/event', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                name: this.state.eventName,
-                type: this.state.type,
-                startTime: startTime,
-                endTime: endTime,
-                duration: this.state.duration,
-                notes: this.state.notes
-            })
+            body: JSON.stringify(body)
         }).then(function(response) {
             if (!response.ok) {
                 failToast.show('Add Event Failed');
@@ -272,7 +283,7 @@ export default class AddEventForm extends React.Component {
     };
 
     renderEndTime(){
-        if(this.state.multiPeriod === true)
+        if(this.state.multiPeriod === true && !this.state.isOnGoing)
             return    <DateTimeWrapper
                 changeDate={this.changeEndDate}
                 startTime={this.state.endTime}
@@ -280,6 +291,20 @@ export default class AddEventForm extends React.Component {
                 changeTime={this.changeEndTime}
                 labelText="End Date"
             />;
+        return null;
+    }
+
+    renderIsOnGoing() {
+        if (this.state.multiPeriod === true) {
+            return <View>
+                <Text style={styles.inputLabel}>Is On Going??</Text>
+                <CheckBox
+                    value={this.state.isOnGoing}
+                    onValueChange={this.setIsOnGoing}
+                    style={styles.checkbox}
+                />
+            </View>
+        }
         return null;
     }
 
@@ -306,6 +331,7 @@ export default class AddEventForm extends React.Component {
                     style={styles.checkbox}
                 />
 
+                {this.renderIsOnGoing()}
                 <DateTimeWrapper
                     changeDate={this.changeDate}
                     startTime={this.state.startTime}
