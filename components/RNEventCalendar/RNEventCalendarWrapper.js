@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-import EventCalendar from './EventCalendar';
+import RNEventCalendar from './RNEventCalendar';
 
-export default function EventCalendarWrapper({navigation}) {
+export default function RNEventCalendarWrapper({navigation}) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <EventCalendar />
+        <RNEventCalendar />
       </View>
     );
   }

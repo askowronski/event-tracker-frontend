@@ -11,7 +11,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import HomeScreen from './components/Home/Home'
 import AddEventScreen from './components/Event/AddEvent/AddEvent';
-import CalendarScreen from './components/EventCalendar/EventCalendarWrapper';
+import CalendarScreen from './components/RNEventCalendar/RNEventCalendarWrapper';
 
 
 const Stack = createStackNavigator();
